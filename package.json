@@ -1,0 +1,18 @@
+{
+  "name": "f2e-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^1.5.2",
+    "mongodb": "^2.1.7",
+    "express": "^4.13.4",
+    "cookie-parser": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
