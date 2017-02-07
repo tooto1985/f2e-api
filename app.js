@@ -142,17 +142,4 @@ app.get("/api/4-(5|6|7)",function(req,res) {
         }
     });
 })();
-//==============================================================
-app.get("/test", function(req,res) {
-    var db = new Db(mongodbUri,"names");
-
-    var search = req.query.search;
-
-    db.select({name:new RegExp("^"+search,"i")},function(data){
-        res.send(data);
-    },function(err) {
-        res.send(err);
-    });
-});
-//==============================================================
 app.listen(process.env.PORT || 3000);
