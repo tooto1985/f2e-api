@@ -142,4 +142,17 @@ app.get("/api/4-(5|6|7)",function(req,res) {
         }
     });
 })();
+//==============================================================
+app.get("/test", function(req,res) {
+    var db = new Db(mongodbUri,"users");
+
+    var username = "tommy";
+
+    db.select({name:username,_id:"567b678a5f8fa9302729b11d"},function(data){
+        res.send(data);
+    },function(err) {
+        res.send(err);
+    });
+});
+//==============================================================
 app.listen(process.env.PORT || 3000);

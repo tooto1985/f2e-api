@@ -4,8 +4,6 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "async": "^1.5.2",
-    "mongodb": "^2.1.7",
     "express": "^4.13.4",
     "cookie-parser": "^1.4.1"
   },
