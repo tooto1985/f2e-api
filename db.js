@@ -28,7 +28,11 @@ module.exports = function(mongodbUri, collectionName) {
                 var keys = Object.keys(filter);
                 for (var i = 0; i < keys.length; i++) {
                     json = json.filter(function(a) {
-                        return filter[keys[i]] === a[keys[i]];
+                        if (filter[keys[i]] instanceof RegExp) {
+                            return filter[keys[i]].test(a[keys[i]]);
+                        } else {
+                            return filter[keys[i]] === a[keys[i]];    
+                        }
                     });
                 }
             }

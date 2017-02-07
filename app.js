@@ -144,11 +144,11 @@ app.get("/api/4-(5|6|7)",function(req,res) {
 })();
 //==============================================================
 app.get("/test", function(req,res) {
-    var db = new Db(mongodbUri,"users");
+    var db = new Db(mongodbUri,"names");
 
-    var username = "tommy";
+    var search = req.query.search;
 
-    db.select({name:username,_id:"567b678a5f8fa9302729b11d"},function(data){
+    db.select({name:new RegExp("^"+search,"i")},function(data){
         res.send(data);
     },function(err) {
         res.send(err);
