@@ -1,96 +1,90 @@
-var async = require("async");
-var MongoClient = require("mongodb").MongoClient;
-var ObjectId = require('mongodb').ObjectID;
-var cache = null;
-module.exports = function(mongodbUri,collectionName) {
-    function asyncrun(callback) {
-        async.waterfall([
-            function(next) {
-                if (cache === null) {
-                    MongoClient.connect(mongodbUri, function(err, db) {
-                        if (!err) {
-                            cache = db;
-                            next(null,cache);
+var fs = require("fs");
+module.exports = function(mongodbUri, collectionName) {
+    function readFile() {
+        var data = fs.readFileSync("./json/" + collectionName + ".json").toString();
+        return JSON.parse(data);
+    }
+
+    function writeFile(data) {
+        fs.writeFileSync("./json/" + collectionName + ".json", JSON.stringify(data, null, "\t"));
+    }
+
+    this.insert = function(insertObject, success, error) {
+        try {
+            var json = readFile();
+            insertObject._id = Date.now().toString();
+            json.push(insertObject);
+            writeFile(json);
+            if (success) success(insertObject);
+        } catch (e) {
+            if (error) error(e);
+        }
+    };
+
+    this.select = function(filter, success, error, fetch) {
+        try {
+            var json = readFile();
+            if (filter.$orderby) {
+                var keys = Object.keys(filter.$orderby);
+                for (var i = 0; i < keys.length; i++) {
+                    json.sort(function(a, b) {
+                        if (filter.$orderby[keys[i]] === 1) {
+                            if (a[keys[i]] > b[keys[i]]) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
                         } else {
-                            next(err,null);
+                            if (a[keys[i]] < b[keys[i]]) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
                         }
                     });
-                } else {
-                    next(null,cache);
                 }
             }
-        ],function(err,db) {
-            callback(err,db && db.collection(collectionName));
-        });
-    }
-    this.insert = function(insertObject,success,error) {
-        asyncrun(function(err,dbc) {
-            if (!err) {
-                dbc.insert(insertObject, function(err, result) {
-                    if (!err) {
-                        if (success) success(result);
-                    } else {
-                        if (error) error(err);
-                    }
-                });
-            } else {
-                if (error) error(err);
+            if (filter.$query) {
+                filter = filter.$query;
             }
-        });
-    };
-    this.select = function(filter,success,error,fetch) {
-        asyncrun(function(err,dbc) {
-            if (!err) {
-                if (!filter) {
-                    filter = {};
+            if (filter) {
+                var keys = Object.keys(filter);
+                for (var i = 0; i < keys.length; i++) {
+                    json = json.filter(function(a) {
+                        if (filter[keys[i]] instanceof RegExp) {
+                            return filter[keys[i]].test(a[keys[i]]);
+                        } else if (filter[keys[i]] instanceof Object) {
+                            if (filter[keys[i]].$gt) {
+                                return a[keys[i]] > filter[keys[i]].$gt;
+                            }
+                            return true;
+                        } else {
+                            return filter[keys[i]] === a[keys[i]];
+                        }
+                    });
                 }
-                var q = dbc.find(filter);
-                if (fetch) {
-                    q = q.limit(fetch);
-                }
-                q.toArray(function(err,data) {
-                    if (!err) {
-                        if (success) success(data);
-                    } else {
-                        if (error) error(err);
-                    }
-                });
-            } else {
-                if (error) error(err);
             }
-        });
-    };
-    this.update = function(id,updateObject,success,error) {
-        asyncrun(function(err,dbc) {
-            if (!err) {
-                dbc.update({_id: new ObjectId(id)},{$set:updateObject},function(err,data) {
-                    if (!err) {
-                        if (success) success(data);
-                    } else {
-                        if (error) error(err);
-                    }
+            if (fetch) {
+                json = json.filter(function(a) {
+                    var index = json.indexOf(a);
+                    return fetch > index;
                 });
-            } else {
-                if (error) error(err);
             }
-        });
+            if (success) success(json);
+        } catch (e) {
+            if (error) error(e);
+        }
     };
-    this.remove = function(id,success,error) {
-        asyncrun(function(err,dbc) {
-            if (!err) {
-                dbc.remove({_id: new ObjectId(id)},function(err,data){
-                    if (!err) {
-                        if (success) success(data);
-                    } else {
-                        if (error) error(err);
-                    }
-                });
-            } else {
-                if (error) error(err);
-            }
-        });
+
+    this.update = function(id, updateObject, success, error) {
+
     };
+
+    this.remove = function(id, success, error) {
+
+    };
+
     this.id = function(id) {
-        return new ObjectId(id);
+
     };
 };

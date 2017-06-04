@@ -6,6 +6,9 @@ var app = express();
 var cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,"public")));
+app.get("/api/2-4", function(req, res) {
+    res.status(500).send('error!');
+});
 app.get("/api/4-(1|2)",function(req,res) {
     var db = new Db(mongodbUri,"users");
     res.set("Access-Control-Allow-Origin", "*");
