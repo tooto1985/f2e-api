@@ -80,14 +80,14 @@ app.get("/api/4-(5|6|7)",function(req,res) {
         var i = 0;
         if (pos > userpos) {
             for (i = userpos; i < pos; i++) {
-                output.push(storage[i]);
+                storage[i] && output.push(storage[i]);
             }
         } else if (pos < userpos) {
             for (i = userpos; i < max + 1; i++) {
-                output.push(storage[i]);
+                storage[i] && output.push(storage[i]);
             }
             for (i = 0; i < pos; i++) {
-                output.push(storage[i]);
+                storage[i] && output.push(storage[i]);
             }
         }
         res.cookie("pos", pos.toString());
@@ -128,14 +128,14 @@ app.get("/api/4-(5|6|7)",function(req,res) {
                     var i = 0;
                     if (pos > userpos) {
                         for (i = userpos; i < pos; i++) {
-                            output.push(storage[i]);
+                            storage[i] && output.push(storage[i]);
                         }
                     } else if (pos < userpos) {
                         for (i = userpos; i < max + 1; i++) {
-                            output.push(storage[i]);
+                            storage[i] && output.push(storage[i]);
                         }
                         for (i = 0; i < pos; i++) {
-                            output.push(storage[i]);
+                            storage[i] && output.push(storage[i]);
                         }
                     }
                     res.cookie("pos", pos.toString());

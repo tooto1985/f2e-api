@@ -1,8 +1,8 @@
 ﻿$(function() {
     function sendMessage(message) {
         if (!message) {
-            $.getJSON("http://127.0.0.1:3000/api/4-9", function(data) {
-                if (data.length > 0) {
+            $.getJSON("/api/4-9", function(data) {
+                if (data.length) {
                     for (var i = 0; i < data.length; i++) {
                         $(".box").append("<div>" + data[i] + "</div>");
                     }
@@ -11,7 +11,7 @@
                 sendMessage();
             });
         } else {
-            $.getJSON("http://127.0.0.1:3000/api/4-9", { name: $("#name").val(), message: message });
+            $.getJSON("/api/4-9", { name: $("#name").val(), message: message });
             $("#message").val("");
         }
     }
@@ -20,7 +20,7 @@
     });
     $("#message").keyup(function(e) {
         if (e.keyCode == 13) {
-            sendMessage($("#message").val());
+            sendMessage($(this).val());
         }
     });
     sendMessage();

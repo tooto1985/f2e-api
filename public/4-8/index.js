@@ -1,7 +1,7 @@
 ﻿$(function () {
     function sendMessage(message) {
-        $.getJSON("http://127.0.0.1:3000/api/4-8", { name: $("#name").val(), message: message }, function(data) {
-            if (data.length > 0) {
+        $.getJSON("/api/4-8", { name: $("#name").val(), message: message }, function(data) {
+            if (data.length) {
                 for (var i = 0; i < data.length; i++) {
                     $(".box").append("<div>" + data[i] + "</div>");
                 }
@@ -17,7 +17,7 @@
     });
     $("#message").keyup(function(e) {
         if (e.keyCode == 13) {
-            sendMessage($("#message").val());
+            sendMessage($(this).val());
         }
     });
     setInterval(sendMessage, 3000);

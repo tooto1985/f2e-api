@@ -2,10 +2,10 @@
     $("#search").keyup(function() {
         var value = $(this).val().trim();
         if (value) {
-            $.getJSON("http://127.0.0.1:3000/api/4-3", {
+            $.getJSON("/api/4-3", {
                     search: value
                 }, function(data) {
-                    if (data.length > 0) {
+                    if (data.length) {
                         var html = "";
                         for (var i = 0; i < data.length; i++) {
                             html += "<a>" + data[i] + "</a>";
